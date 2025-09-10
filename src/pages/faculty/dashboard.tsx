@@ -1,6 +1,9 @@
 import { Sidebar } from "@/components/Sidebar";
 import { FileText, CalendarCheck2, ClipboardList, Users, BarChart2, Bell, BookOpen } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from "recharts";
 
 const quickLinks = [
   { label: "Upload Notes", icon: FileText, to: "/faculty/upload-notes" },
@@ -23,6 +26,19 @@ const marksData = [
   { name: "D. Kumar", marks: 82 },
   { name: "E. Gupta", marks: 91 },
 ];
+
+const attendanceStats = [
+  { name: "Present", value: 87 },
+  { name: "Absent", value: 13 },
+];
+
+const marksDist = [
+  { range: "90-100", count: 2 },
+  { range: "80-89", count: 2 },
+  { range: "70-79", count: 1 },
+];
+
+const COLORS = ["#2563eb", "#f87171", "#fbbf24"];
 
 const FacultyDashboard = () => (
   <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -60,9 +76,27 @@ const FacultyDashboard = () => (
             <ClipboardList className="text-blue-600" />
             <span className="font-bold text-blue-900">Attendance Overview</span>
           </div>
-          <div className="text-blue-700 text-sm">
-            <div>Present: <span className="font-bold text-blue-900">87%</span></div>
-            <div>Absent: <span className="font-bold text-blue-900">13%</span></div>
+          <div className="h-32">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={attendanceStats}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={60}
+                  fill="#2563eb"
+                  dataKey="value"
+                  label
+                >
+                  {attendanceStats.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-2">
@@ -77,7 +111,11 @@ const FacultyDashboard = () => (
                 <XAxis dataKey="name" />
                 <YAxis domain={[70, 100]} />
                 <Tooltip />
-                <Bar dataKey="marks" fill="#2563eb" />
+                <Bar dataKey="marks" fill="#2563eb">
+                  {marksData.map((entry, index) => (
+                    <Cell key={`bar-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -85,6 +123,47 @@ const FacultyDashboard = () => (
             <div>Average Marks: <span className="font-bold text-blue-900">86%</span></div>
             <div>Top Performer: <span className="font-bold text-blue-900">A. Sharma</span></div>
           </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+          <h2 className="text-lg font-bold text-blue-800 mb-2">Marks Distribution</h2>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={marksDist}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="range" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="count" fill="#fbbf24">
+                {marksDist.map((entry, index) => (
+                  <Cell key={`bar-dist-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+          <h2 className="text-lg font-bold text-blue-800 mb-2">Attendance Pie</h2>
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie
+                data={attendanceStats}
+                cx="50%"
+                cy="50%"
+                innerRadius={40}
+                outerRadius={60}
+                fill="#2563eb"
+                dataKey="value"
+                label
+              >
+                {attendanceStats.map((entry, index) => (
+                  <Cell key={`cell-pie-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Legend />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </div>
       <div className="mb-8">
