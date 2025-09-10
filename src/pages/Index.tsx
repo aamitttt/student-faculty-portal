@@ -1,10 +1,8 @@
-import { Sidebar } from "@/components/Sidebar";
 import { GraduationCap } from "lucide-react";
 
 const Index = () => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200">
-      <Sidebar />
       <main className="flex-1 flex flex-col items-center justify-center px-4">
         <div className="max-w-xl text-center">
           <div className="flex justify-center mb-4">
