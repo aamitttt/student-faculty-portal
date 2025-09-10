@@ -1,4 +1,5 @@
 import { FileText, CalendarCheck2, ClipboardList, Users, BarChart2, Bell, BookOpen } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const quickLinks = [
   { label: "Upload Notes", icon: FileText, to: "/faculty/upload-notes" },
@@ -12,6 +13,14 @@ const notifications = [
   { id: 1, text: "3 students marked absent today." },
   { id: 2, text: "New document uploaded for review." },
   { id: 3, text: "Event: Faculty meeting at 4 PM." },
+];
+
+const marksData = [
+  { name: "A. Sharma", marks: 95 },
+  { name: "B. Singh", marks: 88 },
+  { name: "C. Patel", marks: 76 },
+  { name: "D. Kumar", marks: 82 },
+  { name: "E. Gupta", marks: 91 },
 ];
 
 const FacultyDashboard = () => (
@@ -29,6 +38,7 @@ const FacultyDashboard = () => (
         <ul className="text-blue-700 text-sm">
           <li>CS Notes - Algorithms.pdf</li>
           <li>Maths Assignment 3</li>
+          <li>Physics Lab Manual.pdf</li>
         </ul>
       </div>
       <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-2">
@@ -39,6 +49,7 @@ const FacultyDashboard = () => (
         <ul className="text-blue-700 text-sm">
           <li>10:00 AM - BSc 2nd Year</li>
           <li>12:00 PM - MSc 1st Year</li>
+          <li>2:00 PM - BCA 3rd Year</li>
         </ul>
       </div>
       <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-2">
@@ -56,8 +67,19 @@ const FacultyDashboard = () => (
           <BarChart2 className="text-blue-600" />
           <span className="font-bold text-blue-900">Performance Analytics</span>
         </div>
-        <div className="text-blue-700 text-sm">
-          <div>Average Marks: <span className="font-bold text-blue-900">76%</span></div>
+        <div className="h-32">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={marksData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis domain={[70, 100]} />
+              <Tooltip />
+              <Bar dataKey="marks" fill="#2563eb" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="text-blue-700 text-sm mt-2">
+          <div>Average Marks: <span className="font-bold text-blue-900">86%</span></div>
           <div>Top Performer: <span className="font-bold text-blue-900">A. Sharma</span></div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/Sidebar";
 import { CalendarDays, BookOpen, Upload, BarChart2, Bell, Link as LinkIcon } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const quickLinks = [
   { label: "Timetable", icon: CalendarDays, to: "/student/timetable" },
@@ -12,6 +13,14 @@ const notifications = [
   { id: 1, text: "Assignment 2 deadline extended to Friday." },
   { id: 2, text: "New notes uploaded for Mathematics." },
   { id: 3, text: "Event: Coding Hackathon this weekend!" },
+];
+
+const progressData = [
+  { name: "Sem 1", CGPA: 8.2 },
+  { name: "Sem 2", CGPA: 8.5 },
+  { name: "Sem 3", CGPA: 8.7 },
+  { name: "Sem 4", CGPA: 8.9 },
+  { name: "Sem 5", CGPA: 9.0 },
 ];
 
 const StudentDashboard = () => (
@@ -29,9 +38,9 @@ const StudentDashboard = () => (
             <span className="font-bold text-blue-900">Today’s Timetable</span>
           </div>
           <ul className="text-blue-700 text-sm">
-            <li>9:00 AM - Mathematics</li>
-            <li>11:00 AM - Physics</li>
-            <li>2:00 PM - Computer Science</li>
+            <li>9:00 AM - Mathematics (Room 101)</li>
+            <li>11:00 AM - Physics (Room 202)</li>
+            <li>2:00 PM - Computer Science (Lab 1)</li>
           </ul>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-2">
@@ -43,6 +52,7 @@ const StudentDashboard = () => (
             <li>Maths Notes - Algebra.pdf</li>
             <li>Physics Assignment 1 - Due: Friday</li>
             <li>CS Notes - Data Structures.pdf</li>
+            <li>English Essay - Due: Monday</li>
           </ul>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-2">
@@ -53,6 +63,7 @@ const StudentDashboard = () => (
           <ul className="text-blue-700 text-sm">
             <li>10th Marksheet.pdf</li>
             <li>12th Certificate.pdf</li>
+            <li>Transfer Certificate.pdf</li>
           </ul>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-2">
@@ -60,9 +71,20 @@ const StudentDashboard = () => (
             <BarChart2 className="text-blue-600" />
             <span className="font-bold text-blue-900">Academic Progress</span>
           </div>
-          <div className="text-blue-700 text-sm">
+          <div className="text-blue-700 text-sm mb-2">
             <div>CGPA: <span className="font-bold text-blue-900">8.7</span></div>
             <div>Attendance: <span className="font-bold text-blue-900">92%</span></div>
+          </div>
+          <div className="h-32">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={progressData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis domain={[8, 10]} />
+                <Tooltip />
+                <Line type="monotone" dataKey="CGPA" stroke="#2563eb" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
