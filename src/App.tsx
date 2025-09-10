@@ -27,6 +27,10 @@ import FacultyManageTimetables from "./pages/faculty/manage-timetables";
 import FacultyAttendance from "./pages/faculty/attendance";
 import FacultyMarksEntry from "./pages/faculty/marks-entry";
 import FacultyReviewDocuments from "./pages/faculty/review-documents";
+import FacultyStudentList from "./pages/faculty/student-list";
+import FacultyMessages from "./pages/faculty/messages";
+import FacultyAnalytics from "./pages/faculty/analytics";
+import FacultyNotifications from "./pages/faculty/notifications";
 
 // Events
 import EventAnnouncements from "./pages/events/announcements";
@@ -69,6 +73,10 @@ const App = () => (
           <Route path="/faculty/attendance" element={<FacultyAttendance />} />
           <Route path="/faculty/marks-entry" element={<FacultyMarksEntry />} />
           <Route path="/faculty/review-documents" element={<FacultyReviewDocuments />} />
+          <Route path="/faculty/student-list" element={<FacultyStudentList />} />
+          <Route path="/faculty/messages" element={<FacultyMessages />} />
+          <Route path="/faculty/analytics" element={<FacultyAnalytics />} />
+          <Route path="/faculty/notifications" element={<FacultyNotifications />} />
           {/* Events */}
           <Route path="/events/announcements" element={<EventAnnouncements />} />
           <Route path="/events/calendar" element={<EventCalendar />} />
