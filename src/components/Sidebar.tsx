@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import {
-  LogIn, UserPlus, UserCog, KeyRound, LayoutDashboard, GraduationCap, BookOpen, Upload, BarChart2,
-  FileText, CalendarDays, Users, ClipboardList, CheckSquare, FileCheck, Bell, Settings, User, Megaphone, CalendarCheck2, FileEdit
+  GraduationCap, LayoutDashboard, CalendarDays, BookOpen, Upload, BarChart2,
+  FileText, CalendarCheck2, ClipboardList, CheckSquare, FileCheck, Bell, Settings, User, Megaphone, FileEdit, Users, Menu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 
 const navSections = [
   {
@@ -57,8 +59,11 @@ type SidebarProps = {
 
 export const Sidebar = ({ role }: SidebarProps) => {
   const location = useLocation();
-  return (
-    <aside className="w-72 min-h-screen bg-gradient-to-b from-blue-900 to-blue-700 border-r border-sidebar-border p-4 flex flex-col gap-4 shadow-lg">
+  const [open, setOpen] = useState(false);
+
+  // Sidebar content
+  const sidebarContent = (
+    <div className="w-72 min-h-screen bg-gradient-to-b from-blue-900 to-blue-700 border-r border-sidebar-border p-4 flex flex-col gap-4 shadow-lg">
       <div className="mb-2 flex items-center gap-2">
         <GraduationCap className="text-white" size={32} />
         <span className="text-2xl font-extrabold text-white tracking-wide">SAC Portal</span>
@@ -82,6 +87,7 @@ export const Sidebar = ({ role }: SidebarProps) => {
                       "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-800/80 text-blue-100 transition font-medium",
                       location.pathname === item.to && "bg-blue-800 text-white font-bold shadow"
                     )}
+                    onClick={() => setOpen(false)}
                   >
                     <item.icon size={20} className="shrink-0" />
                     {item.label}
@@ -91,6 +97,31 @@ export const Sidebar = ({ role }: SidebarProps) => {
             </div>
           ))}
       </nav>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile: Hamburger menu and Drawer */}
+      <div className="md:hidden flex items-center p-2 bg-blue-900">
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerTrigger asChild>
+            <button
+              className="text-white p-2"
+              aria-label="Open sidebar"
+              onClick={() => setOpen(true)}
+            >
+              <Menu size={28} />
+            </button>
+          </DrawerTrigger>
+          <span className="ml-2 text-white font-bold text-lg">SAC Portal</span>
+          <DrawerContent className="p-0">
+            {sidebarContent}
+          </DrawerContent>
+        </Drawer>
+      </div>
+      {/* Desktop: Static sidebar */}
+      <div className="hidden md:block">{sidebarContent}</div>
+    </>
   );
 };

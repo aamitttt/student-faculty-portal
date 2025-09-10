@@ -15,9 +15,9 @@ const notifications = [
 ];
 
 const StudentDashboard = () => (
-  <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-white">
+  <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-white">
     <Sidebar role="student" />
-    <div className="flex-1 p-8">
+    <div className="flex-1 p-4 md:p-8">
       <h1 className="text-3xl font-extrabold mb-2 text-blue-900 flex items-center gap-2">
         <BarChart2 className="text-blue-700" /> Student Dashboard
       </h1>
