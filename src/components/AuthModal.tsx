@@ -157,8 +157,7 @@ const AuthModal = ({ role: initialRole }: Props) => {
 
       {!supabaseReady && (
         <div className="mb-4 rounded-md border bg-muted/40 p-3 text-sm">
-          <div className="font-medium">Demo mode (Supabase not configured)</div>
-          <div className="mt-1 text-muted-foreground">Use these credentials for the selected role:</div>
+          <div className="font-medium">For demo use below credential</div>
           <div className="mt-2 font-mono text-xs">
             <div>Email: {demo.email}</div>
             <div>Password: {demo.password}</div>
