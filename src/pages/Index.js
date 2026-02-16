@@ -16,9 +16,7 @@ const Index = () => {
             <span className="font-semibold text-blue-900">Connect. Learn. Achieve.</span>
           </p>
           <div className="bg-white/80 rounded-xl shadow-lg p-6 mb-4">
-            <p className="text-lg text-blue-800 font-semibold mb-2">
-              🚀 Get started by choosing a module from the sidebar!
-            </p>
+            <p className="text-lg text-blue-800 font-semibold mb-2">🚀 Get started by choosing a module from the sidebar!</p>
             <ul className="text-blue-700 text-base list-disc list-inside">
               <li>Access dashboards tailored for students and faculty</li>
               <li>Stay updated with events, announcements, and notifications</li>

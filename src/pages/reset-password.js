@@ -9,7 +9,9 @@ const ResetPassword = () => (
     <form className="flex flex-col gap-4">
       <Input type="password" placeholder="New Password" required />
       <Input type="password" placeholder="Confirm Password" required />
-      <Button type="submit" className="w-full">Reset Password</Button>
+      <Button type="submit" className="w-full">
+        Reset Password
+      </Button>
     </form>
   </div>
 );

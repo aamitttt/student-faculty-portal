@@ -6,14 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_ACCOUNTS, isSupabaseConfigured } from "@/lib/demoAuth";
 
-type Props = {
-  role: "student" | "faculty";
-};
-
-const AuthModal = ({ role: initialRole }: Props) => {
+const AuthModal = ({ role: initialRole }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isForgot, setIsForgot] = useState(false);
-  const [role, setRole] = useState<"student" | "faculty">(initialRole);
+  const [role, setRole] = useState(initialRole);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "", fullName: "", id: "" });
   const [emailForReset, setEmailForReset] = useState("");
@@ -22,7 +18,7 @@ const AuthModal = ({ role: initialRole }: Props) => {
   const demo = useMemo(() => DEMO_ACCOUNTS[role], [role]);
   const supabaseReady = useMemo(() => isSupabaseConfigured(), []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -41,86 +37,91 @@ const AuthModal = ({ role: initialRole }: Props) => {
     showError("Invalid demo credentials for the selected role.");
   };
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
 
-    // If Supabase isn't configured, use demo login for the Login path.
     if (isLogin && !supabaseReady) {
       await handleDemoLogin();
       return;
     }
 
     setLoading(true);
+
     if (isLogin) {
-      // Login (Supabase)
       if (!form.email || !form.password) {
         showError("Please enter email and password.");
         setLoading(false);
         return;
       }
+
       const { error } = await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password,
       });
+
       setLoading(false);
+
       if (error) {
         showError(error.message);
       } else {
         showSuccess("Login successful!");
         navigate(role === "student" ? "/student/dashboard" : "/faculty/dashboard");
       }
-    } else {
-      // Register (Supabase)
-      if (!supabaseReady) {
-        setLoading(false);
-        showError("Supabase is not configured. Demo login is available, but registration requires Supabase.");
-        return;
-      }
+      return;
+    }
 
-      if (!form.email || !form.password || !form.fullName || !form.id) {
-        showError("Please fill all fields.");
-        setLoading(false);
-        return;
-      }
-      const { data, error } = await supabase.auth.signUp({
-        email: form.email,
-        password: form.password,
-        options: {
-          data: {
-            full_name: form.fullName,
-            [`${role}_id`]: form.id,
-            role,
-          },
-        },
-      });
-      if (error) {
-        setLoading(false);
-        showError(error.message);
-        return;
-      }
-      // Insert into students/faculty table
-      const table = role === "student" ? "students" : "faculty";
-      const { error: dbError } = await supabase
-        .from(table)
-        .insert([
-          {
-            id: data.user?.id,
-            full_name: form.fullName,
-            email: form.email,
-            [`${role}_id`]: form.id,
-          },
-        ]);
+    // Register (Supabase)
+    if (!supabaseReady) {
       setLoading(false);
-      if (dbError) {
-        showError(dbError.message);
-      } else {
-        showSuccess("Registration successful! Please check your email to verify your account.");
-        setIsLogin(true);
-      }
+      showError("Supabase is not configured. Demo login is available, but registration requires Supabase.");
+      return;
+    }
+
+    if (!form.email || !form.password || !form.fullName || !form.id) {
+      showError("Please fill all fields.");
+      setLoading(false);
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        data: {
+          full_name: form.fullName,
+          [`${role}_id`]: form.id,
+          role,
+        },
+      },
+    });
+
+    if (error) {
+      setLoading(false);
+      showError(error.message);
+      return;
+    }
+
+    const table = role === "student" ? "students" : "faculty";
+    const { error: dbError } = await supabase.from(table).insert([
+      {
+        id: data.user?.id,
+        full_name: form.fullName,
+        email: form.email,
+        [`${role}_id`]: form.id,
+      },
+    ]);
+
+    setLoading(false);
+
+    if (dbError) {
+      showError(dbError.message);
+    } else {
+      showSuccess("Registration successful! Please check your email to verify your account.");
+      setIsLogin(true);
     }
   };
 
-  const handleForgot = async (e: React.FormEvent) => {
+  const handleForgot = async (e) => {
     e.preventDefault();
 
     if (!supabaseReady) {
@@ -129,13 +130,17 @@ const AuthModal = ({ role: initialRole }: Props) => {
     }
 
     setLoading(true);
+
     if (!emailForReset) {
       showError("Please enter your email.");
       setLoading(false);
       return;
     }
+
     const { error } = await supabase.auth.resetPasswordForEmail(emailForReset);
+
     setLoading(false);
+
     if (error) {
       showError(error.message);
     } else {
@@ -179,14 +184,7 @@ const AuthModal = ({ role: initialRole }: Props) => {
               />
             </>
           )}
-          <Input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+          <Input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
           <Input
             name="password"
             type="password"
@@ -220,25 +218,25 @@ const AuthModal = ({ role: initialRole }: Props) => {
             {isLogin ? (
               <>
                 New to SAC Portal?{" "}
-                <button className="text-blue-600 hover:underline" onClick={() => setIsLogin(false)}>
+                <button className="text-blue-600 hover:underline" type="button" onClick={() => setIsLogin(false)}>
                   Register
                 </button>
                 <br />
-                <button className="text-blue-600 hover:underline mt-2" onClick={() => setIsForgot(true)}>
+                <button className="text-blue-600 hover:underline mt-2" type="button" onClick={() => setIsForgot(true)}>
                   Forgot Password?
                 </button>
               </>
             ) : (
               <>
                 Already have an account?{" "}
-                <button className="text-blue-600 hover:underline" onClick={() => setIsLogin(true)}>
+                <button className="text-blue-600 hover:underline" type="button" onClick={() => setIsLogin(true)}>
                   Login
                 </button>
               </>
             )}
           </>
         ) : (
-          <button className="text-blue-600 hover:underline" onClick={() => setIsForgot(false)}>
+          <button className="text-blue-600 hover:underline" type="button" onClick={() => setIsForgot(false)}>
             Back to Login
           </button>
         )}

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-const BackButton = ({ className = "" }: { className?: string }) => {
+const BackButton = ({ className = "" }) => {
   const navigate = useNavigate();
   return (
     <Button

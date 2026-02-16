@@ -31,30 +31,31 @@ const Settings = () => {
           <h2 className="font-semibold text-blue-800 mb-2">Change Password</h2>
           <form
             className="flex flex-col gap-3"
-            onSubmit={e => {
+            onSubmit={(e) => {
               e.preventDefault();
-              // Dummy submit
             }}
           >
             <Input
               type="password"
               placeholder="Current Password"
               value={passwords.current}
-              onChange={e => setPasswords({ ...passwords, current: e.target.value })}
+              onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
             />
             <Input
               type="password"
               placeholder="New Password"
               value={passwords.new}
-              onChange={e => setPasswords({ ...passwords, new: e.target.value })}
+              onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
             />
             <Input
               type="password"
               placeholder="Confirm New Password"
               value={passwords.confirm}
-              onChange={e => setPasswords({ ...passwords, confirm: e.target.value })}
+              onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
             />
-            <Button type="submit" className="w-full">Update Password</Button>
+            <Button type="submit" className="w-full">
+              Update Password
+            </Button>
           </form>
         </div>
       </div>

@@ -37,22 +37,24 @@ const Profile = () => {
           {edit ? (
             <form
               className="w-full flex flex-col gap-3"
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
                 setEdit(false);
               }}
             >
               <Input
                 value={profile.name}
-                onChange={e => setProfile({ ...profile, name: e.target.value })}
+                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                 placeholder="Full Name"
               />
               <Input
                 value={profile.email}
-                onChange={e => setProfile({ ...profile, email: e.target.value })}
+                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                 placeholder="Email"
               />
-              <Button type="submit" className="w-full">Save</Button>
+              <Button type="submit" className="w-full">
+                Save
+              </Button>
             </form>
           ) : (
             <Button className="w-full" onClick={() => setEdit(true)}>
