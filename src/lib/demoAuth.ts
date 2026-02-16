@@ -7,10 +7,11 @@ export const DEMO_ACCOUNTS: Record<DemoRole, { email: string; password: string; 
     redirectTo: "/student/dashboard",
   },
   faculty: {
-    email: "facultiy@gmail.com",
+    email: "faculty@gmail.com",
     password: "Admin@123",
     redirectTo: "/faculty/dashboard",
   },
+
 };
 
 export function isSupabaseConfigured() {
