@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { showError, showSuccess } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { DEMO_ACCOUNTS, isSupabaseConfigured } from "@/lib/demoAuth";
 
 type Props = {
   role: "student" | "faculty";
@@ -18,21 +19,46 @@ const AuthModal = ({ role: initialRole }: Props) => {
   const [emailForReset, setEmailForReset] = useState("");
   const navigate = useNavigate();
 
+  const demo = useMemo(() => DEMO_ACCOUNTS[role], [role]);
+  const supabaseReady = useMemo(() => isSupabaseConfigured(), []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleDemoLogin = async () => {
+    if (!form.email || !form.password) {
+      showError("Please enter email and password.");
+      return;
+    }
+
+    if (form.email.trim().toLowerCase() === demo.email.toLowerCase() && form.password === demo.password) {
+      showSuccess(`Demo login successful (${role}).`);
+      navigate(demo.redirectTo);
+      return;
+    }
+
+    showError("Invalid demo credentials for the selected role.");
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // If Supabase isn't configured, use demo login for the Login path.
+    if (isLogin && !supabaseReady) {
+      await handleDemoLogin();
+      return;
+    }
+
     setLoading(true);
     if (isLogin) {
-      // Login
+      // Login (Supabase)
       if (!form.email || !form.password) {
         showError("Please enter email and password.");
         setLoading(false);
         return;
       }
-      const { error, data } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password,
       });
@@ -44,7 +70,13 @@ const AuthModal = ({ role: initialRole }: Props) => {
         navigate(role === "student" ? "/student/dashboard" : "/faculty/dashboard");
       }
     } else {
-      // Register
+      // Register (Supabase)
+      if (!supabaseReady) {
+        setLoading(false);
+        showError("Supabase is not configured. Demo login is available, but registration requires Supabase.");
+        return;
+      }
+
       if (!form.email || !form.password || !form.fullName || !form.id) {
         showError("Please fill all fields.");
         setLoading(false);
@@ -90,6 +122,12 @@ const AuthModal = ({ role: initialRole }: Props) => {
 
   const handleForgot = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!supabaseReady) {
+      showError("Supabase is not configured, so password reset is unavailable in demo mode.");
+      return;
+    }
+
     setLoading(true);
     if (!emailForReset) {
       showError("Please enter your email.");
@@ -109,32 +147,30 @@ const AuthModal = ({ role: initialRole }: Props) => {
   return (
     <div>
       <div className="flex justify-center gap-2 mb-4">
-        <Button
-          variant={role === "student" ? "default" : "outline"}
-          onClick={() => setRole("student")}
-          size="sm"
-        >
+        <Button variant={role === "student" ? "default" : "outline"} onClick={() => setRole("student")} size="sm">
           Student
         </Button>
-        <Button
-          variant={role === "faculty" ? "default" : "outline"}
-          onClick={() => setRole("faculty")}
-          size="sm"
-        >
+        <Button variant={role === "faculty" ? "default" : "outline"} onClick={() => setRole("faculty")} size="sm">
           Faculty
         </Button>
       </div>
+
+      {!supabaseReady && (
+        <div className="mb-4 rounded-md border bg-muted/40 p-3 text-sm">
+          <div className="font-medium">Demo mode (Supabase not configured)</div>
+          <div className="mt-1 text-muted-foreground">Use these credentials for the selected role:</div>
+          <div className="mt-2 font-mono text-xs">
+            <div>Email: {demo.email}</div>
+            <div>Password: {demo.password}</div>
+          </div>
+        </div>
+      )}
+
       {!isForgot ? (
         <form className="flex flex-col gap-4" onSubmit={handleAuth}>
           {!isLogin && (
             <>
-              <Input
-                name="fullName"
-                placeholder="Full Name"
-                value={form.fullName}
-                onChange={handleChange}
-                required
-              />
+              <Input name="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} required />
               <Input
                 name="id"
                 placeholder={role === "student" ? "Student ID" : "Faculty ID"}
@@ -178,6 +214,7 @@ const AuthModal = ({ role: initialRole }: Props) => {
           </Button>
         </form>
       )}
+
       <div className="mt-4 text-center text-sm">
         {!isForgot ? (
           <>
