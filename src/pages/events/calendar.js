@@ -11,7 +11,7 @@ const events = [
 const daysInMonth = 31;
 const month = "July 2024";
 
-function getEventForDay(day: number) {
+function getEventForDay(day) {
   const date = `2024-07-${day.toString().padStart(2, "0")}`;
   return events.find((e) => e.date === date);
 }
@@ -34,9 +34,7 @@ const EventCalendar = () => (
               className={`rounded-lg p-2 border ${event ? "bg-blue-100 border-blue-400" : "bg-gray-50 border-gray-200"}`}
             >
               <div className="font-bold">{day}</div>
-              {event && (
-                <div className="text-xs text-blue-700 mt-1">{event.title}</div>
-              )}
+              {event && <div className="text-xs text-blue-700 mt-1">{event.title}</div>}
             </div>
           );
         })}
