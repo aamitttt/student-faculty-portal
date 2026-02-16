@@ -1,3 +1,4 @@
+JS migration.">
 import { defineConfig } from "vite";
 import dyadComponentTagger from "@dyad-sh/react-vite-component-tagger";
 import react from "@vitejs/plugin-react-swc";
@@ -13,5 +14,6 @@ export default defineConfig(() => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    extensions: [".mjs", ".js", ".jsx", ".json"],
   },
 }));
